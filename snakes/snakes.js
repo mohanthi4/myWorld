@@ -2,14 +2,14 @@ import { dispalyGameBoard } from "./data/dispaly.js";
 import { LADDER_JUMPS, SNAKE_JUMPS, WIN_POSITION } from "./data/data.js";
 
 const move = (step) => {
-  let newStep = SNAKE_JUMPS[step] || LADDER_JUMPS[step] || step;
+  const newStep = SNAKE_JUMPS[step] || LADDER_JUMPS[step] || step;
   const symbol = newStep > step ? "🪜" : (newStep === step) ? "🏃‍♂️‍➡️" : "🐍";
   console.log(`\n${symbol} ${step} -> ${newStep}`);
   return newStep;
 };
 
 const positionChange = (diceValue, board, previousStep = 0) => {
-  let currentStep = diceValue + previousStep;
+  const currentStep = diceValue + previousStep;
   if (currentStep > board.length) {
     console.log("\n❗️invalid move");
     return previousStep;
@@ -42,3 +42,4 @@ export const startGame = ({ board, currentPlayer, players, state }) => {
   currentPlayer = players[index];
   return startGame({ board, currentPlayer, players, state });
 };
+ 

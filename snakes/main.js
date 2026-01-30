@@ -5,5 +5,5 @@ const main = () => {
   const gameState = gameData();
   startGame(gameState);
 };
-
+  
 main();

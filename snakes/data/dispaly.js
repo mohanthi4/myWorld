@@ -1,5 +1,5 @@
 import { chunk } from "jsr:@std/collections/chunk";
-import { LADDER_JUMPS, SNAKE_JUMPS,BOARD_WIDTH } from "./data.js";
+import { BOARD_WIDTH, LADDER_JUMPS, SNAKE_JUMPS } from "./data.js";
 
 const playerInfo = (playerData) => {
   console.log("%c\t\tPLAYER DETAILS:", "color:blue");
@@ -15,18 +15,18 @@ const gameInfo = () => {
   console.log("%c 🪜 : 3 -> 6 , 7 -> 15 \n", "color:green");
 };
 
-const playerCheck = (row, player1, player2) =>
+const playerCollisionCheck = (row, player1, player2) =>
   (row === player2.token) ? (player2.token + player1.token) : player1.token;
 
-const placeToken = (row, playerData) => {
+const placePlayerTokens = (row, playerData) => {
   const rowCopy = [...row];
 
   playerData.forEach((player) => {
     if (rowCopy.includes(player.position)) {
       const index = rowCopy.indexOf(player.position);
-      let player2 = 0;
+      const player2 = 0;
       if (player2 < playerData.length) {
-        row[index] = playerCheck(
+        row[index] = playerCollisionCheck(
           row[index],
           player,
           playerData[player2],
@@ -36,16 +36,16 @@ const placeToken = (row, playerData) => {
   });
 };
 
-const formatBoard = (board, playerData) => {
+const createBoardGrid = (board, playerData) => {
   const rows = chunk([...board].reverse(), BOARD_WIDTH);
 
   return rows.map((row, i) => {
-    placeToken(row, playerData);
+    placePlayerTokens(row, playerData);
     return i % 2 ? row.reverse() : row;
   });
 };
 
-const special = (row) => {
+const applySnakeOrLadder = (row) => {
   if (SNAKE_JUMPS[row]) {
     return `🐍${row}`;
   }
@@ -55,12 +55,11 @@ const special = (row) => {
   return row;
 };
 
+const elementArrangement = (element) => applySnakeOrLadder(element).toString().padStart(8);
+
 const boardState = (program) => {
   return program.map((x) =>
-    x.map((y) => {
-      const element = special(y);
-      return element.toString().padStart(8);
-    }).join("")
+    x.map(elementArrangement).join("")
   )
     .join("\n\n");
 };
@@ -69,6 +68,6 @@ export const dispalyGameBoard = (elements, playerData) => {
   console.clear();
   gameInfo();
   playerInfo(playerData);
-  const final = formatBoard(elements, playerData);
+  const final = createBoardGrid(elements, playerData);
   console.log(boardState(final));
 };
